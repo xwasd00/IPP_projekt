@@ -1,0 +1,2 @@
+.IPPcode20  # nacteni vstupu a vypis
+WRITE string@\032

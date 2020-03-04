@@ -16,7 +16,6 @@ code20, checks syntactic and lexical correctness of the code and prints on stand
 }
 
 $preg = new Regex_IPP_match();
-
 //checking for header
 while(!feof(STDIN)) {
 	$text = fgets(STDIN);
@@ -31,7 +30,6 @@ while(!feof(STDIN)) {
 }
 
 $xml = new Xml_IPP_writer();
-
 while(!feof(STDIN)) {
     //read line
     $text = fgets(STDIN);

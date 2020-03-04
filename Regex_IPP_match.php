@@ -11,7 +11,7 @@ class Regex_IPP_match
     {
         $label = '(?:[_\-$&%*!?a-zA-Z]+)';
         $var = '((?:GF|LF|TF)@' . $label . ')';
-        $symb = '(?:' . $var . '|(nil@nil|int@[+-]?\d+|bool@(?:true|false)|string@(?:(?:[^\s#]|\\\d{3})*)))';
+        $symb = '(?:' . $var . '|(nil@nil|int@[+-]?\d+|bool@(?:true|false)|string@(?:\\\\\d{3}|[^\\\\\s#])*))';
 
         $frame = '(?i:CREATEFRAME)|(?i:PUSHFRAME)|(?i:POPFRAME)';
         $call_label_jump = '(?i:CALL|LABEL|JUMP)\s+(' . $label . ')';
@@ -27,7 +27,7 @@ class Regex_IPP_match
         $this->regex = '/^\s*(?:' . $instruction . ')?\s*' . $comment . '$/';
     }
     public function match_header($text){
-        if(preg_match('/\s*\.IPPcode20\s*(#.*)?/', $text)) {
+        if(preg_match('/^\s*\.IPPcode20\s*(#.*)?$/i', $text)) {
 			return 0;//matches header
 
         }
@@ -44,7 +44,7 @@ class Regex_IPP_match
             if($k < 1) {
 
                 $value = preg_replace('/\s*(\w+).*/', '$1', $value);
-                //$value = substr($value, 0, strlen($value) - 1);
+                $value = trim($value);
                 $value = strtoupper($value);
                 continue;
             }
