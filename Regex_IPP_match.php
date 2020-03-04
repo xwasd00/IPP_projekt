@@ -28,10 +28,14 @@ class Regex_IPP_match
     }
     public function match_header($text){
         if(preg_match('/\s*\.IPPcode20\s*(#.*)?/', $text)) {
-            return 1;
+			return 0;//matches header
+
         }
         else {
-            return 0;
+            if(preg_match('/(^\s*#.*$)|(^\s*$)/', $text)){
+				return 2;//matches comment at the beginning(or empty line)
+			}
+			return 1;//not any match
         }
     }
     public function ready_array($array){
@@ -40,7 +44,7 @@ class Regex_IPP_match
             if($k < 1) {
 
                 $value = preg_replace('/\s*(\w+).*/', '$1', $value);
-                $value = substr($value, 0, strlen($value) - 1);
+                //$value = substr($value, 0, strlen($value) - 1);
                 $value = strtoupper($value);
                 continue;
             }

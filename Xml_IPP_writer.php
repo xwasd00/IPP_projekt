@@ -11,12 +11,13 @@ class Xml_IPP_writer
         $this->counter = 1;
         $this->xw = xmlwriter_open_memory();
         xmlwriter_set_indent($this->xw, 1);
-        $res = xmlwriter_set_indent_string($this->xw, ' ');
+        $res = xmlwriter_set_indent_string($this->xw, '    ');
         xmlwriter_start_document($this->xw, '1.0', 'UTF-8');
         xmlwriter_start_element($this->xw, 'program');
         xmlwriter_start_attribute($this->xw, 'language');
         xmlwriter_text($this->xw, 'IPPcode20');
         xmlwriter_end_attribute($this->xw);
+
     }
     public function __destruct()
     {
