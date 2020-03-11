@@ -19,7 +19,7 @@ class Regex_IPP_match
         $call_label_jump = '(?i:CALL|LABEL|JUMP)\s+(' . $label . ')';
         $defvar = '(?i:DEFVAR)\s+' . $var;
         $pushs_pops_write_exit_dprint = '(?i:PUSHS|POPS|WRITE|EXIT|DPRINT)\s+' . $symb;
-        $add_sub_mul_idiv_lt_gt_eq_and_or_str2int_concat_getchar_setchar = '(?i:ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|STR2INT|CONCAT|GETCHAR|SETCHAR)\s+' . $var . '\s+' . $symb . '\s+' . $symb;
+        $add_sub_mul_idiv_lt_gt_eq_and_or_str2int_concat_getchar_setchar = '(?i:ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|STRI2INT|CONCAT|GETCHAR|SETCHAR)\s+' . $var . '\s+' . $symb . '\s+' . $symb;
         $not_int2char_strlen_type_move = '(?i:NOT|INT2CHAR|STRLEN|TYPE|MOVE)\s+' . $var . '\s+' . $symb;
         $jumpifeq_jumpifneq = '(?i:JUMPIFEQ|JUMPIFNEQ)\s+(' . $label . ')\s+' . $symb . '\s+' . $symb;
         $read = '(?i:READ)\s+' . $var . '\s+' . '(bool|int|string)';
