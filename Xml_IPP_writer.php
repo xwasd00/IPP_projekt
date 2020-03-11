@@ -37,7 +37,8 @@ class Xml_IPP_writer
         echo preg_replace('/(.*)(\')(.*)/', '$1&apos;$3', $this->xw->outputMemory());//XMLWriter neprevadi "'" do specialniho znaku
     }
 
-    // zapsani instrukce a poradi instrukce do XMLWriteru
+    // zapsani instrukce a poradi instrukce do XMLWriteru podle pole $array
+    // pole $array: musi mit na pozici 0 operacni kod, dalsi polozky jsou argumenty (podle operacniho kodu)
     public function xml_write($array) {
 
         //zacatek instrukce

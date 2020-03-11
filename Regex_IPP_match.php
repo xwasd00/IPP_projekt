@@ -3,7 +3,9 @@
 
 class Regex_IPP_match
 {
+    // regularni vyraz pouzivany na kontrolu instrukci
     private $regex;
+    // v pripade nalezeni instrukce je do tohoto pole zapsana samotna instrukce a argumenty jejiho operacniho kodu
     public $matches;
 
     //inicializace regularniho vyrazu(ulozeneho v promenne $regex) pouzivaneho pro vyhodnoceni, zda $text(STDIN) odpovida IPPcode20
@@ -28,6 +30,7 @@ class Regex_IPP_match
     }
 
     // hledani hlavicky na zacatku
+    // argument $text: 1 radek kodu IPPcode20
     // funkce vraci:
     // 0 pokud ji nasla
     // 2 pokud nasla prazdny radek nebo komentar
@@ -45,6 +48,7 @@ class Regex_IPP_match
     }
 
     // odstraneni prebytecnych bilych znaku, upraveni pole do XMLWriteru
+    // pole $array: pole obsahujici 1 instrukci kodu IPPcode20, nalezenou funkci match_instruction()
     public function ready_array($array){
         $array = array_merge(array_diff($array, array("")));// kvuli preg_match --> nechava prazdne hodnoty v poli
 
@@ -69,7 +73,9 @@ class Regex_IPP_match
         return $array;
     }
 
-    // kontrola $text(radku) regularnim vyrazem
+    // kontrola radku regularnim vyrazem
+    // pokud funkce najde instrukci na danem radku, vypise ji do pole $matches spolu s argumenty
+    // $text: jeden radek kodu IPPcode20
     // funkce vraci:
     // 0 pokud se jedna o instrukci jazyka IPPcode20
     // 2 pokud se jedna o samotny komentar nebo prazdny radek
@@ -91,6 +97,7 @@ class Regex_IPP_match
 
     // v pripade, ze nejde o instrukci IPPcode20
     // tato funkce urcuje spravny navratovy kod
+    // $text: radek s neplatnou instrukci
     // 22 v pripade, ze neni rozpoznan operacni kod
     // 23 v pripade, ze jde o jinou synt. chybu (e.g. spatny pocet argumentu)
     public function return_err_code($text) {
