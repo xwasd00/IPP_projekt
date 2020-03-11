@@ -6,7 +6,7 @@ class Regex_IPP_match
     private $regex;
     public $matches;
 
-    //initialization of regular expression used for comparison input string($text)
+    //inicializace regularniho vyrazu(ulozeneho v promenne $regex) pouzivaneho pro vyhodnoceni, zda $text(STDIN) odpovida IPPcode20
     public function __construct()
     {
         $label = '(?:[_\-$&%*!?a-zA-Z]+)';
@@ -20,66 +20,86 @@ class Regex_IPP_match
         $add_sub_mul_idiv_lt_gt_eq_and_or_str2int_concat_getchar_setchar = '(?i:ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|STR2INT|CONCAT|GETCHAR|SETCHAR)\s+' . $var . '\s+' . $symb . '\s+' . $symb;
         $not_int2char_strlen_type_move = '(?i:NOT|INT2CHAR|STRLEN|TYPE|MOVE)\s+' . $var . '\s+' . $symb;
         $jumpifeq_jumpifneq = '(?i:JUMPIFEQ|JUMPIFNEQ)\s+(' . $label . ')\s+' . $symb . '\s+' . $symb;
-        $read = '(?i:READ)\s+' . $var . '\s+' . '(bool|int|string|nil)';
+        $read = '(?i:READ)\s+' . $var . '\s+' . '(bool|int|string)';
 
         $instruction = $frame . '|' . $defvar . '|' . $call_label_jump . '|' . $pushs_pops_write_exit_dprint .  '|' . $add_sub_mul_idiv_lt_gt_eq_and_or_str2int_concat_getchar_setchar . '|' . $not_int2char_strlen_type_move . '|' . $read . '|'. $jumpifeq_jumpifneq . '|(?i:BREAK)|(?i:RETURN)';
         $comment = '(?:#.*)?';
         $this->regex = '/^\s*(?:' . $instruction . ')?\s*' . $comment . '$/';
     }
-    public function match_header($text){
-        if(preg_match('/^\s*\.IPPcode20\s*(#.*)?$/i', $text)) {
-			return 0;//matches header
 
-        }
-        else {
-            if(preg_match('/(^\s*#.*$)|(^\s*$)/', $text)){
-				return 2;//matches comment at the beginning(or empty line)
-			}
-			return 1;//not any match
+    // hledani hlavicky na zacatku
+    // funkce vraci:
+    // 0 pokud ji nasla
+    // 2 pokud nasla prazdny radek nebo komentar
+    // 1 pokud je zde neco jineho
+    public function match_header($text)
+    {
+        if (preg_match('/^\s*\.IPPcode20\s*(#.*)?$/i', $text)) {
+            return 0;//hlavicka nalezena
+        } else {
+            if (preg_match('/(^\s*#.*$)|(^\s*$)/', $text)) {
+                return 2;//komentar nebo prazdny radek
+            }
+            return 1;//neco jineho
         }
     }
-    public function ready_array($array){
-        $array = array_merge(array_diff($array, array("")));
-        foreach ($array as $k => &$value) {
-            if($k < 1) {
 
-                $value = preg_replace('/\s*(\w+).*/', '$1', $value);
+    // odstraneni prebytecnych bilych znaku, upraveni pole do XMLWriteru
+    public function ready_array($array){
+        $array = array_merge(array_diff($array, array("")));// kvuli preg_match --> nechava prazdne hodnoty v poli
+
+        //odstraneni prazdnych radku a upravi pole tak, aby bylo pripraveno na zapsani pomoci XMLWriteru
+        foreach ($array as $k => &$value) {
+            //operacni kod
+            if($k < 1) {
+                $value = preg_replace('/\s*(\w+).*/', '$1', $value);// tato hodnota pole je cela instrukce (e.g. MOVE GF@a GF@b) <-- chci jen operacni kod
                 $value = trim($value);
                 $value = strtoupper($value);
                 continue;
             }
-            if(preg_match('/(GF|LF|TF).*/', $value)) {
+            //argumenty
+            if(preg_match('/(GF|LF|TF).*/', $value)) {// jedna se o promenou
                 $value = 'var@' . $value;
             }
-            if(strpos($value, '@') === false) {
+            if(strpos($value, '@') === false) {// jedna se o typ type (instrukce READ)
                 $value = 'type@' . $value;
             }
         }
         unset ($value);
         return $array;
     }
+
+    // kontrola $text(radku) regularnim vyrazem
+    // funkce vraci:
+    // 0 pokud se jedna o instrukci jazyka IPPcode20
+    // 2 pokud se jedna o samotny komentar nebo prazdny radek
+    // 1 pokud je zde neco jineho
     public function match_instruction($text) {
         if(preg_match($this->regex, $text, $this->matches)){
-            //comment or next line
+            // je to komentar nebo prazdny radek
             if(preg_match('/(^\s*#.*$)|(^\s*$)/', $this->matches[0])) {
                 return 2;
             }
-            //everythink is OK
+            // je to instrukce
             return 0;
         }
         else {
-            //no match
+            // zadna shoda
             return 1;
         }
     }
 
+    // v pripade, ze nejde o instrukci IPPcode20
+    // tato funkce urcuje spravny navratovy kod
+    // 22 v pripade, ze neni rozpoznan operacni kod
+    // 23 v pripade, ze jde o jinou synt. chybu (e.g. spatny pocet argumentu)
     public function return_err_code($text) {
-        if(preg_match('/\s*(?i:MOVE|CREATEFRAME|PUSHFRAME|POPFRAME|DEFVAR|CALL|RETURN|PUSHS|POPS|ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|NOT|INT2CHAR|STRI2INT|READ|WRITE|CONCAT|STRLEN|GETCHAR|SETCHAR|TYPE|LABEL|JUMP|JUMPIFEQ|JUMPIFNEQ|EXIT|DPRINT|BREAK)(\s+.*)|(\s*$)/', $text)) {
-            //unknown opcode or wrong opcode
+        if(preg_match('/\s*(?i:MOVE|CREATEFRAME|PUSHFRAME|POPFRAME|DEFVAR|CALL|RETURN|PUSHS|POPS|ADD|SUB|MUL|IDIV|LT|GT|EQ|AND|OR|NOT|INT2CHAR|STRI2INT|READ|WRITE|CONCAT|STRLEN|GETCHAR|SETCHAR|TYPE|LABEL|JUMP|JUMPIFEQ|JUMPIFNEQ|EXIT|DPRINT|BREAK)(\s+.*)/', $text)) {
+            //jina syntakticka chyba
             return 23;
         }
         else {
-            //another synt. error
+            //neznamy operacni kod
             return 22;
         }
     }

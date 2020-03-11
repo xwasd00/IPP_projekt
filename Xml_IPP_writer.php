@@ -4,58 +4,73 @@
 class Xml_IPP_writer
 {
     private $xw;
-    private $counter;
+    private $counter;//poradnik instrukci
 
+    // po vytvoreni tridy se nastavi citac instrukci na 1
+    // a v XMLWriteru se nastavi indentace, kodovani a element program
     public function __construct()
     {
         $this->counter = 1;
-        $this->xw = xmlwriter_open_memory();
-        xmlwriter_set_indent($this->xw, 1);
-        $res = xmlwriter_set_indent_string($this->xw, '    ');
-        xmlwriter_start_document($this->xw, '1.0', 'UTF-8');
-        xmlwriter_start_element($this->xw, 'program');
-        xmlwriter_start_attribute($this->xw, 'language');
-        xmlwriter_text($this->xw, 'IPPcode20');
-        xmlwriter_end_attribute($this->xw);
+        $this->xw = new XMLWriter();
 
+        //nastaveni xmlWriteru
+        $this->xw->openMemory();
+        $this->xw->setIndent(true);
+        $this->xw->setIndentString("  ");//indentace
+
+        //zacatek dokumentu + element program
+        $this->xw->startDocument('1.0', 'UTF-8');
+        $this->xw->startElement('program');
+        $this->xw->startAttribute('language');
+        $this->xw->text('IPPcode20');
+        $this->xw->endAttribute();
     }
+
+    // ukonceni elementu program a tim padem celeho dokumentu + zapsani na STDOUT
     public function __destruct()
     {
+        //konec elementu program
+        $this->xw->endElement();
+        $this->xw->endDocument();
 
-        xmlwriter_end_element($this->xw);//program
-        xmlwriter_end_document($this->xw);
-        echo xmlwriter_output_memory($this->xw);
+        //zapsani celeho xml na STDOUT
+        echo preg_replace('/(.*)(\')(.*)/', '$1&apos;$3', $this->xw->outputMemory());//XMLWriter neprevadi "'" do specialniho znaku
     }
 
+    // zapsani instrukce a poradi instrukce do XMLWriteru
     public function xml_write($array) {
 
-        //instruction element
-        xmlwriter_start_element($this->xw, 'instruction');
-        //attributes of instruction element
-        xmlwriter_start_attribute($this->xw, 'order');
-        xmlwriter_text($this->xw, $this->counter);
-        xmlwriter_end_attribute($this->xw);
-        xmlwriter_start_attribute($this->xw, 'opcode');
-        xmlwriter_text($this->xw, $array[0]);
-        xmlwriter_end_attribute($this->xw);
+        //zacatek instrukce
+        $this->xw->startElement('instruction');
 
+        //poradi instrukce
+        $this->xw->startAttribute('order');
+        $this->xw->text($this->counter);
+        $this->xw->endAttribute();
+
+        //operacni kod (e.g. MOVE)
+        $this->xw->startAttribute('opcode');
+        $this->xw->text($array[0]);
+        $this->xw->endAttribute();
+
+        //argumenty
         foreach ($array as $k => $value) {
             if ($k < 1) {
                 continue;
             }
-            //child element(arg[$k])
-            xmlwriter_start_element($this->xw, 'arg' . $k);
-            xmlwriter_start_attribute($this->xw, 'type');
-            xmlwriter_text($this->xw, substr($value, 0, strpos($value, '@')));
-            xmlwriter_end_attribute($this->xw);
-            xmlwriter_text($this->xw, substr($value, strpos($value, '@') + 1));
-            xmlwriter_end_element($this->xw); //arg[$k]
+            //start elementu arg $k
+            $this->xw->startElement( 'arg' . $k);
+            //typ argumentu (bool, string, type,...)
+            $this->xw->startAttribute('type');
+            $this->xw->text(substr($value, 0, strpos($value, '@')));
+            $this->xw->endAttribute();
+            //hodnota argumentu
+            $this->xw->text(substr($value, strpos($value, '@') + 1));
+            $this->xw->endElement(); //konec elementu arg $k
         }
 
-        xmlwriter_end_element($this->xw); // instruction
-        echo xmlwriter_output_memory($this->xw);
+        //konec instrukce
+        $this->xw->endElement();
         $this->counter++;
     }
-
-
 }
