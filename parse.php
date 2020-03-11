@@ -1,6 +1,7 @@
 <?php
 require_once('Regex_IPP_match.php');
 require_once ('Xml_IPP_writer.php');
+ini_set('display_errors', 'stderr');
 
 // zobrazeni napovedy
 if($argc > 1) {
