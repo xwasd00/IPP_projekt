@@ -1,6 +1,6 @@
 <?php
-require_once('Regex_IPP_match.php');
-require_once ('Xml_IPP_writer.php');
+require_once('src/Regex_IPP_match.php');
+require_once ('src/Xml_IPP_writer.php');
 ini_set('display_errors', 'stderr');
 
 // zobrazeni napovedy
