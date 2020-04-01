@@ -65,8 +65,13 @@ class Regex_IPP_match
             if(preg_match('/(GF|LF|TF).*/', $value)) {// jedna se o promenou
                 $value = 'var@' . $value;
             }
-            if(strpos($value, '@') === false) {// jedna se o typ type (instrukce READ)
-                $value = 'type@' . $value;
+            if(strpos($value, '@') === false) {// jedna se o typ type (instrukce READ), nebo label
+                if(preg_match('/(int|string|bool)/', $value)) {
+					$value = 'type@' . $value;
+				}
+				else {
+					$value = 'label@' . $value
+				}
             }
         }
         unset ($value);
