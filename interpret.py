@@ -1,6 +1,7 @@
 import getopt, sys
 from src.XmlParse import Parse
 from src.Labels import Label
+from src.Variables import Variables
 
 from pprint import pprint
 
@@ -42,20 +43,27 @@ if __name__ == "__main__":
     i = 0
 
     label = Label()
+    var = Variables()
     while i < length:
         ## TODO: checking argumentu
         opcode = xml.instructions[i][1].lower()
         args = xml.instructions[i][2]
-        pprint (args)
+        ref = []
         ################### LABEL ###########################
         if opcode == 'label':
+            ref.append('label')
+            if var.check(args, ref) != 0:
+                sys.exit(32)
             ret = label.set_label(args[0][0], i)
-            if (ret == -1):
+            if ret == -1:
                 sys.exit(52)
         #################### JUMP ###########################
         elif opcode == 'jump':
+            ref.append('label')
+            if var.check(args, ref) != 0:
+                sys.exit(32)
             i = label.get_label(args[0][0])
-            if(i == -1):
+            if i == -1:
                 sys.exit(52)
         ################### JUMPIFEQ ########################
         elif opcode == 'jumpifeq':

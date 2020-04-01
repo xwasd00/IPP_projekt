@@ -46,10 +46,16 @@ class Parse:
             arg3.append( inst.findtext('arg3') )
             for arg in inst:
                 if arg.tag == 'arg1':
+                    if len(arg1) == 0:
+                        return(32)
                     arg1.append(arg.get('type'))
                 elif arg.tag == 'arg2':
+                    if len(arg2) == 0:
+                        return(32)
                     arg2.append(arg.get('type'))
                 elif arg.tag == 'arg3':
+                    if len(arg2) == 0:
+                        return(32)
                     arg3.append(arg.get('type'))
                 else:
                     sys.stderr.write("Očekáván element 'arg1', 'arg2' nebo 'arg3'.\n")
