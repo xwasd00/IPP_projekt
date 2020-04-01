@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <program language="IPPcode20">
 
-  <instruction order="2" opcode="MOVE">
+  <instruction order="6" opcode="MOVE">
     <arg1 type="var">GF@counter</arg1>
     <arg2 type="string"></arg2>
   </instruction>
@@ -16,5 +16,12 @@
   </instruction>
   <instruction order="5" opcode="WRITE">
     <arg1 type="var">GF@a</arg1>
+  </instruction>
+  <instruction order="2" opcode="LABEL">
+    <arg1 type="label">while</arg1>
+  </instruction>
+
+  <instruction order="7" opcode="JUMP">
+    <arg1 type="label">whil</arg1>
   </instruction>
 </program>
