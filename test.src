@@ -1,8 +1,9 @@
 .IPPcode20
+LABEL start
 DEFVAR GF@counter
 MOVE GF@counter string@ # Inicializace proměnné na prázdný řetězec
 # Jednoduchá iterace , dokud nebude splněna zadaná podmínka
 WRITE string@\032Proměnná\032GF@counter<>\032obsahuje\032a
 WRITE string@\010asdasd'asd"adfa
 WRITE GF@a
-
+JUMP start

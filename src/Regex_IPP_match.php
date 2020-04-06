@@ -70,7 +70,7 @@ class Regex_IPP_match
 					$value = 'type@' . $value;
 				}
 				else {
-					$value = 'label@' . $value
+					$value = 'label@' . $value;
 				}
             }
         }
