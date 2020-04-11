@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <program language="IPPcode20">
-
-  <instruction order="6" opcode="MOVE">
+  <instruction order="1" opcode="LABEL">
+    <arg1 type="label">start</arg1>
+  </instruction>
+  <instruction order="2" opcode="CREATEFRAME"/>
+  <instruction order="3" opcode="DEFVAR">
+    <arg1 type="var">TF@a</arg1>
+  </instruction>
+  <instruction order="4" opcode="PUSHFRAME"/>
+  <instruction order="5" opcode="DEFVAR">
+    <arg1 type="var">LF@b</arg1>
+  </instruction>
+  <instruction order="6" opcode="CREATEFRAME"/>
+  <instruction order="7" opcode="DEFVAR">
+    <arg1 type="var">TF@aa</arg1>
+  </instruction>
+  <instruction order="8" opcode="POPFRAME"/>
+  <instruction order="9" opcode="DEFVAR">
+    <arg1 type="var">GF@counter</arg1>
+  </instruction>
+  <instruction order="10" opcode="MOVE">
     <arg1 type="var">GF@counter</arg1>
     <arg2 type="string"></arg2>
   </instruction>
-  <instruction order="1" opcode="DEFVAR">
-    <arg1 type="var">GF@counter</arg1>
-  </instruction>
-  <instruction order="3" opcode="WRITE">
+  <instruction order="11" opcode="WRITE">
     <arg1 type="var">string@\032Proměnná\032GF@counter&lt;&gt;\032obsahuje\032a</arg1>
   </instruction>
-  <instruction order="4" opcode="WRITE">
+  <instruction order="12" opcode="WRITE">
     <arg1 type="string">\010asdasd&apos;asd&quot;adfa</arg1>
   </instruction>
-  <instruction order="5" opcode="WRITE">
-    <arg1 type="var">GF@a</arg1>
+  <instruction order="13" opcode="WRITE">
+    <arg1 type="var">GF@counter</arg1>
   </instruction>
-  <instruction order="2" opcode="LABEL">
-    <arg1 type="label">while</arg1>
-  </instruction>
-
-  <instruction order="7" opcode="JUMP">
-    <arg1 type="label">whil</arg1>
+  <instruction order="14" opcode="MOVE">
+    <arg1 type="var">GF@counter</arg1>
+    <arg2 type="string">aaaaa</arg2>
   </instruction>
 </program>
