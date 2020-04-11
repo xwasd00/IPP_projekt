@@ -19,8 +19,10 @@ class Variables:
                         sys.exit(53)
                     return
                 elif arg_type == 'string':
-                    ## TODO: check???
-                    print(arg)
+                    match = re.findall(r'\\(\d\d\d)', arg[0])
+                    for i in match:
+                        i = chr(int(i))
+                        arg[0] = re.sub(r'\\\d\d\d', i, arg[0], 1)
                     return
                 elif arg_type == 'bool':
                     if re.match(r"^(true|false)$", arg[0]) is None:
@@ -82,7 +84,6 @@ class Variables:
             frame = self.TF
         else:
             sys.exit(32)
-        
         if not var[1] in frame:
             sys.exit(54)
         if frame[var[1]] is None:
@@ -127,9 +128,9 @@ class Variables:
                 self.TF[var[1]] = value
             else:
                 sys.exit(53)
-
         else:
             sys.exit(32)
+        return
 
     def create_var(self, var):
         var = self.split_var(var)

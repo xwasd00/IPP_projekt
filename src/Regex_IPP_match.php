@@ -62,7 +62,7 @@ class Regex_IPP_match
                 continue;
             }
             //argumenty
-            if(preg_match('/(GF|LF|TF).*/', $value)) {// jedna se o promenou
+            if(preg_match('/^(GF|LF|TF).*/', $value)) {// jedna se o promenou
                 $value = 'var@' . $value;
             }
             if(strpos($value, '@') === false) {// jedna se o typ type (instrukce READ), nebo label

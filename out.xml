@@ -17,23 +17,23 @@
   </instruction>
   <instruction order="8" opcode="POPFRAME"/>
   <instruction order="9" opcode="DEFVAR">
-    <arg1 type="var">GF@counter</arg1>
+    <arg1 type="var">GF@a</arg1>
   </instruction>
   <instruction order="10" opcode="MOVE">
-    <arg1 type="var">GF@counter</arg1>
+    <arg1 type="var">GF@a</arg1>
     <arg2 type="string"></arg2>
   </instruction>
   <instruction order="11" opcode="WRITE">
-    <arg1 type="var">string@\032Proměnná\032GF@counter&lt;&gt;\032obsahuje\032a</arg1>
+    <arg1 type="string">\032Proměnná\032GF@counter&lt;&gt;\032obsahuje\032a\010</arg1>
   </instruction>
-  <instruction order="12" opcode="WRITE">
-    <arg1 type="string">\010asdasd&apos;asd&quot;adfa</arg1>
+  <instruction order="12" opcode="READ">
+    <arg1 type="var">GF@a</arg1>
+    <arg2 type="type">string</arg2>
   </instruction>
   <instruction order="13" opcode="WRITE">
-    <arg1 type="var">GF@counter</arg1>
+    <arg1 type="string">\010asdasd&apos;asd&quot;adfa\010</arg1>
   </instruction>
-  <instruction order="14" opcode="MOVE">
-    <arg1 type="var">GF@counter</arg1>
-    <arg2 type="string">aaaaa</arg2>
+  <instruction order="14" opcode="WRITE">
+    <arg1 type="var">GF@a</arg1>
   </instruction>
 </program>

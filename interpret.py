@@ -3,9 +3,6 @@ from src.XmlParse import Parse
 from src.Labels import Label
 from src.Variables import Variables
 
-from pprint import pprint
-
-
 
 if __name__ == "__main__":
     stdin = ""
@@ -37,9 +34,13 @@ if __name__ == "__main__":
     ret = xml.parse(xml_file)
     if ret != 0:
         sys.exit(ret)
-    ### TODO: udelat trochu jinak (u read asi jenom) #######
-    if stdin == "":
-        stdin = sys.stdin
+    if stdin != "":
+        try:
+            f = open(stdin)
+        except IOError:
+            sys.stderr.write("Soubor nedostupný.\n")
+            sys.exit(11)
+        sys.stdin = f
     #########################################################
     length = len(xml.instructions)
     i = 0
@@ -62,8 +63,11 @@ if __name__ == "__main__":
     while i < length:
         opcode = xml.instructions[i][1].lower()
         args = xml.instructions[i][2]
+        ################# LABEL - pass #######################
+        if opcode == 'label':
+            pass
         ##################### JUMP ###########################
-        if opcode == 'jump':
+        elif opcode == 'jump':
             ref1 = ['label']
             var.check(args[0], ref1)
             var.check_none(args[1])
@@ -102,6 +106,16 @@ if __name__ == "__main__":
             i = label.get_label(xml.instructions[i][2][0][0])
             if(i == -1):
                 sys.exit(52)
+        ##################### EXIT ###########################
+        elif opcode == 'exit':
+            ref1 = ['int']
+            var.check(args[0], ref1)
+            var.check_none(args[1])
+            var.check_none(args[2])
+            if args[0][0] < 50 and args[0][0] >= 0:
+                sys.exit(args[0][0])
+            else:
+                sys.exit(57)
         ################## CREATEFRAME #######################
         elif opcode == 'createframe':
             var.check_none(args[0])
@@ -134,12 +148,53 @@ if __name__ == "__main__":
             var.check(args[0], ref1)
             var.check(args[1], ref2)
             var.check_none(args[2])
-            if (args[1][1] == 'var'):
+            if args[1][1] == 'var':
                 value = var.get_var(args[1][0])
             else:
                 value = args[1]
             var.update_var(args[0][0], value)
+        ################## WRITE #############################
+        elif opcode == 'write':
+            ref1 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check_none(args[1])
+            var.check_none(args[2])
+            if args[0][1] == 'var':
+                value = var.get_var(args[0][0])
+            else:
+                value = args[0]
+            if value[1] == 'nil':
+                print()
+            else:
+                print(value[0], end='')
+        #################### READ ############################
+        elif opcode == 'read':
+            ref1 = ['var']
+            ref2 = ['type']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check_none(args[2])
+            try:
+                a = input()
+            except EOFError:
+                value = ['nil', 'nil']
+                var.update_var(args[0][0], value)
+                pass
+            if args[1][0] == 'int' and a.isdigit():
+                value = [a, 'int']
+            elif args[1][0] == 'string':
+                value = [a, 'string']
+            elif args[1][0] == 'bool':
+                if a.lower() == 'true':
+                    value = [a.lower , 'bool']
+                else:
+                    value = ['false', 'bool']
+            else:
+                value = ['nil', 'nil']
+            var.update_var(args[0][0], value)
+
 
         i += 1
-    print(var.GF)
+    f.close()
 
+print(var.GF)
