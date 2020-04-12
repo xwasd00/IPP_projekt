@@ -390,12 +390,18 @@ if __name__ == "__main__":
                 value2 = args[2]
             if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
                 sys.exit(53)
+            ##ˇprvni moznostˇ##
             if value1[0] == value2[0]:
                 val = ['true', 'bool']
             elif value1[1] == 'nil' and value2[0] == '':
                 val = ['true', 'bool']
             elif value2[1] == 'nil' and value1[0] == '':
                 val = ['true', 'bool']
+            ##ˇdruha moznostˇ##
+#            if value1[1] == 'nil' or value2[1] == 'nil':
+#                val = ['false', 'bool']
+#            elif value1[0] == value2[0]:
+#                val = ['true', 'bool']
             else:
                 val = ['false', 'bool']
             var.update_var(args[0][0], val)
