@@ -112,11 +112,12 @@ if __name__ == "__main__":
                 value2 = args[2]
             if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
                 sys.exit(53)
-            if value1[0] == value2[0]:
+            ## porovnavani
+            if value1[1] == 'nil' and value1[1] == 'nil':
                 i = label.get_label(xml.instructions[i][2][0][0])
-            elif value1[1] == 'nil' and value2[0] == '':
-                i = label.get_label(xml.instructions[i][2][0][0])
-            elif value2[1] == 'nil' and value1[0] == '':
+            elif value1[1] == 'nil' or value2[1] == 'nil':
+                pass
+            elif value1[0] == value2[0]:
                 i = label.get_label(xml.instructions[i][2][0][0])
             else:
                 pass
@@ -140,14 +141,16 @@ if __name__ == "__main__":
                 value2 = args[2]
             if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
                 sys.exit(53)
-            if value1[0] != value2[0]:
-                i = label.get_label(xml.instructions[i][2][0][0])
-            elif value1[1] == 'nil' and value2[0] != '':
-                i = label.get_label(xml.instructions[i][2][0][0])
-            elif value2[1] == 'nil' and value1[0] != '':
-                i = label.get_label(xml.instructions[i][2][0][0])
-            else:
+            ## porovnavani
+            if value1[1] == 'nil' and value1[1] == 'nil':
                 pass
+            elif value1[1] == 'nil' or value2[1] == 'nil':
+                i = label.get_label(xml.instructions[i][2][0][0])
+            elif value1[0] == value2[0]:
+                pass
+            else:
+                i = label.get_label(xml.instructions[i][2][0][0])
+
             if(i == -1):
                 sys.exit(52)
         ##################### EXIT ###########################
@@ -390,18 +393,13 @@ if __name__ == "__main__":
                 value2 = args[2]
             if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
                 sys.exit(53)
-            ##ˇprvni moznostˇ##
-            if value1[0] == value2[0]:
+            ## porovnavani
+            if value1[1] == 'nil' and value1[1] == 'nil':
                 val = ['true', 'bool']
-            elif value1[1] == 'nil' and value2[0] == '':
+            elif value1[1] == 'nil' or value2[1] == 'nil':
+                val = ['false', 'bool']
+            elif value1[0] == value2[0]:
                 val = ['true', 'bool']
-            elif value2[1] == 'nil' and value1[0] == '':
-                val = ['true', 'bool']
-            ##ˇdruha moznostˇ##
-#            if value1[1] == 'nil' or value2[1] == 'nil':
-#                val = ['false', 'bool']
-#            elif value1[0] == value2[0]:
-#                val = ['true', 'bool']
             else:
                 val = ['false', 'bool']
             var.update_var(args[0][0], val)
