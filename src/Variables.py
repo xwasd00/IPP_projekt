@@ -96,12 +96,7 @@ class Variables:
         if var[0] == 'GF':
             if not var[1] in self.GF:
                 sys.exit(54)
-            if self.GF[var[1]] is None:
-                self.GF[var[1]] = value
-            elif self.GF[var[1]][1] == value[1]:
-                self.GF[var[1]] = value
-            else:
-                sys.exit(53)
+            self.GF[var[1]] = value
         ######## LOCAL FRAME #######
         elif var[0] == 'LF':
             if len(self.sLF) == 0: # neinicializovany ramec
@@ -109,12 +104,7 @@ class Variables:
             LF = self.sLF.pop()
             if not var[1] in LF:
                 sys.exit(54)
-            if LF[var[1]] is None:
-                LF[var[1]] = value
-            elif LF[var[1]][1] == value[1]:
-                LF[var[1]] = value
-            else:
-                sys.exit(53)
+            LF[var[1]] = value
             self.sLF.append(LF)
         ##### TEMPORARY FRAME ######
         elif var[0] == 'TF':
@@ -122,12 +112,7 @@ class Variables:
                 sys.exit(55)
             if not var[1] in self.TF: 
                 sys.exit(54)
-            if self.TF[var[1]] is None:
-                self.TF[var[1]] = value
-            elif self.TF[var[1]][1] == value[1]:
-                self.TF[var[1]] = value
-            else:
-                sys.exit(53)
+            self.TF[var[1]] = value
         else:
             sys.exit(32)
         return

@@ -96,14 +96,58 @@ if __name__ == "__main__":
                 sys.exit(56)
         ################### JUMPIFEQ ########################
         elif opcode == 'jumpifeq':
-            #TODO: porovnání + kontrola argumentu
-            i = label.get_label(xml.instructions[i][2][0][0])
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string', 'nil']
+            ref3 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+            else:
+                value2 = args[2]
+            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+                sys.exit(53)
+            if value1[0] == value2[0]:
+                i = label.get_label(xml.instructions[i][2][0][0])
+            elif value1[1] == 'nil' and value2[0] == '':
+                i = label.get_label(xml.instructions[i][2][0][0])
+            elif value2[1] == 'nil' and value1[0] == '':
+                i = label.get_label(xml.instructions[i][2][0][0])
+            else:
+                pass
             if(i == -1):
                 sys.exit(52)
         ################### JUMPIFNEQ ########################
         elif opcode == 'jumpifneq':
-            #TODO: porovnání + kontrola argumentu
-            i = label.get_label(xml.instructions[i][2][0][0])
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string', 'nil']
+            ref3 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+            else:
+                value2 = args[2]
+            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+                sys.exit(53)
+            if value1[0] != value2[0]:
+                i = label.get_label(xml.instructions[i][2][0][0])
+            elif value1[1] == 'nil' and value2[0] != '':
+                i = label.get_label(xml.instructions[i][2][0][0])
+            elif value2[1] == 'nil' and value1[0] != '':
+                i = label.get_label(xml.instructions[i][2][0][0])
+            else:
+                pass
             if(i == -1):
                 sys.exit(52)
         ##################### EXIT ###########################
@@ -192,7 +236,282 @@ if __name__ == "__main__":
             else:
                 value = ['nil', 'nil']
             var.update_var(args[0][0], value)
+        ################### ADD ##############################
+        elif opcode == 'add':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'int':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value1[0] = value1[0] + value2[0]
+            var.update_var(args[0][0], value1)
+        ################### SUB ##############################
+        elif opcode == 'sub':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'int':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value1[0] = value1[0] - value2[0]
+            var.update_var(args[0][0], value1)
+        ################### MUL ##############################
+        elif opcode == 'mul':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'int':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value1[0] = value1[0] * value2[0]
+            var.update_var(args[0][0], value1)
+        ################### IDIV ##############################
+        elif opcode == 'idiv':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'int':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            if value2[0] == 0:
+                sys.exit(57)
+            value1[0] = value1[0] // value2[0]
+            var.update_var(args[0][0], value1)
+        ################### LT ##############################
+        elif opcode == 'lt':
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string']
+            ref3 = ['var', 'int', 'bool', 'string']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+            else:
+                value2 = args[2]
+            if value1[1] != value2[1]:# musi byt stejneho typu
+                sys.exit(53)
+            if value1[0] < value2[0]:
+                val = ['true', 'bool']
+            else:
+                val = ['false', 'bool']
+            var.update_var(args[0][0], val) 
+        ################### GT ##############################
+        elif opcode == 'gt':
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string']
+            ref3 = ['var', 'int', 'bool', 'string']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+            else:
+                value2 = args[2]
+            if value1[1] != value2[1]:# musi byt stejneho typu
+                sys.exit(53)
+            if value1[0] > value2[0]:
+                val = ['true', 'bool']
+            else:
+                val = ['false', 'bool']
+            var.update_var(args[0][0], val)
+        ################### EQ ##############################
+        elif opcode == 'eq':
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string', 'nil']
+            ref3 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+            else:
+                value2 = args[2]
+            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+                sys.exit(53)
+            if value1[0] == value2[0]:
+                val = ['true', 'bool']
+            elif value1[1] == 'nil' and value2[0] == '':
+                val = ['true', 'bool']
+            elif value2[1] == 'nil' and value1[0] == '':
+                val = ['true', 'bool']
+            else:
+                val = ['false', 'bool']
+            var.update_var(args[0][0], val)
+        ################### AND ##############################
+        elif opcode == 'and':
+            ref1 = ['var']
+            ref2 = ['var', 'bool']
+            ref3 = ['var', 'bool']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'bool':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'bool':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value1[0] = value1[0] and value2[0]
+            var.update_var(args[0][0], value1)
+        ################### OR ##############################
+        elif opcode == 'or':
+            ref1 = ['var']
+            ref2 = ['var', 'bool']
+            ref3 = ['var', 'bool']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'bool':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'bool':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value1[0] = value1[0] or value2[0]
+            var.update_var(args[0][0], value1)
+        ################### NOT ##############################
+        elif opcode == 'not':
+            ref1 = ['var']
+            ref2 = ['var', 'bool']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check_none(args[2])
+            if args[1][1] == 'var':
+                value = var.get_var(args[1][0])
+                if value[1] != 'bool':
+                    sys.exit(53)
+            else:
+                value = args[1]
+            if value[0] == 'false':
+                value[0] = 'true'
+            else:
+                value[0] = 'false'
+            var.update_var(args[0][0], value)
+        ################# INT2CHAR ###########################
+        elif opcode == 'int2char':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check_none(args[2])
+            if args[1][1] == 'var':
+                value = var.get_var(args[1][0])
+                if value[1] != 'int':
+                    sys.exit(53)
+            else:
+                value = args[1]
+            try:
+                value[0] = chr(value[0])
+            except ValueError:
+                sys.exit(58)
+            value[1] = 'string'
+            var.update_var(args[0][0], value)
+        ################# STRI2INT ###########################
+        elif opcode == 'stri2int':
+            ref1 = ['var']
+            ref2 = ['var', 'string']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'string':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[1][1] == 'var':
+                value2 = var.get_var(args[1][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[1]
+            if 0 <= value2[0] < len(value1[0]):
+                sys.exit(58)
+            char = value1[0][value2[0]]
+            try:
+                value1[0] = ord(char)
+            except ValueError:
+                sys.exit(58)
+            value[1] = 'int'
+            var.update_var(args[0][0], value)
+ 
 
+        
 
         i += 1
     f.close()
