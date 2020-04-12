@@ -494,12 +494,12 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value1 = args[1]
-            if args[1][1] == 'var':
-                value2 = var.get_var(args[1][0])
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
                 if value2[1] != 'int':
                     sys.exit(53)
             else:
-                value2 = args[1]
+                value2 = args[2]
             if 0 <= value2[0] < len(value1[0]):
                 sys.exit(58)
             char = value1[0][value2[0]]
@@ -509,6 +509,39 @@ if __name__ == "__main__":
                 sys.exit(58)
             value[1] = 'int'
             var.update_var(args[0][0], value)
+        ################## TYPE ############################
+        elif opcode == 'type':
+            ref1 = ['var']
+            ref2 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check_none(args[2])
+            if args[1][1] == 'var':
+                var_type = var.get_type(args[1][0])
+            else:
+                var_type = args[1][1]
+            value = [var_type, 'string']
+            var.update_var(args[0][0], value)
+        ################## PUSHS ##########################
+        elif opcode == 'pushs':
+            ref1 = ['var', 'int', 'bool', 'string', 'nil']
+            var.check(args[0], ref1)
+            var.check_none(args[1])
+            var.check_none(args[2])
+            if args[0][1] == 'var':
+                value = var.get_var(args[0][0])
+            else:
+                value = args[0]
+            var.push_var(value)
+        ################## POPS ##########################
+        elif opcode == 'pops':
+            ref1 = ['var']
+            var.check(args[0], ref1)
+            var.check_none(args[1])
+            var.check_none(args[2])
+            value = var.pop_var()
+            var.update_var(args[0][0], value)
+
  
 
         

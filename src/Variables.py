@@ -6,6 +6,8 @@ class Variables:
     LF = None # nedefinovane ramce
     TF = None
 
+    vStack = [] # zasobnik hodnot (PUSHS POPS)
+
     def check(self, arg, ref):
         if len(arg) < 2:
             sys.exit(32)
@@ -90,6 +92,29 @@ class Variables:
             sys.exit(56)
         return frame[var[1]]
 
+    def get_type(self, var):
+        var = self.split_var(var)
+        if var[0] == 'GF':
+            frame = self.GF
+        elif var[0] == 'LF':
+            if len(self.sLF) == 0: # neinicializovany ramec
+                sys.exit(55)
+            LF = self.sLF.pop()
+            frame = LF
+            self.sLF.append(LF)
+        elif var[0] == 'TF':
+            if self.TF is None: # neinicializovany ramec
+                sys.exit(55)
+            frame = self.TF
+        else:
+            sys.exit(32)
+        if not var[1] in frame:
+            sys.exit(54)
+        if frame[var[1]] is None:
+            return 'nil'
+        return frame[var[1][1]]
+
+
     def update_var(self, var, value):
         var = self.split_var(var)
         ####### GLOBAL FRAME #######
@@ -143,3 +168,12 @@ class Variables:
         else:
             sys.exit(32)
     
+    def push_var(self, value):
+        self.vStack.append(value)
+    
+    def pop_var(self):
+        if len(self.vStack) == 0:
+            sys.exit()
+        else:
+            ret = self.vStack.pop()
+        return ret
