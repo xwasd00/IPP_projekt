@@ -3,7 +3,6 @@ import re
 class Variables:
     GF = {} # typ dictionary
     sLF = [] # zasobnik ramcu
-    LF = None # nedefinovane ramce
     TF = None
 
     vStack = [] # zasobnik hodnot (PUSHS POPS)
@@ -17,7 +16,9 @@ class Variables:
                 if arg_type == 'label' or arg_type == 'var':
                     return
                 elif arg_type == 'int':
-                    if not isinstance(arg[0], int):
+                    try:
+                        arg[0] = int(arg[0])
+                    except ValueError:
                         sys.exit(53)
                     return
                 elif arg_type == 'string':
@@ -37,6 +38,8 @@ class Variables:
                 elif arg_type == 'type':
                     if re.match(r"^(int|bool|string)$", arg[0]) is None:
                         sys.exit(53)
+                    return
+                else:
                     return
                 break
         sys.exit(53)
@@ -111,8 +114,8 @@ class Variables:
         if not var[1] in frame:
             sys.exit(54)
         if frame[var[1]] is None:
-            return 'nil'
-        return frame[var[1][1]]
+            return ''
+        return frame[var[1]][1]
 
 
     def update_var(self, var, value):
@@ -173,7 +176,7 @@ class Variables:
     
     def pop_var(self):
         if len(self.vStack) == 0:
-            sys.exit()
+            sys.exit(56)
         else:
             ret = self.vStack.pop()
         return ret

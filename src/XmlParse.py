@@ -75,8 +75,9 @@ class Parse:
         def sortOrder(val):
             return val[0]
         self.instructions.sort(key = sortOrder)
-        if self.instructions[0][0] < 0:
-            return(32)
+        if len(self.instructions) > 0:
+            if self.instructions[0][0] < 0:
+                return(32)
         del root
         del tree
         return (0)

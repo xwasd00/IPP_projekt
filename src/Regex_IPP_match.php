@@ -11,7 +11,7 @@ class Regex_IPP_match
     //inicializace regularniho vyrazu(ulozeneho v promenne $regex) pouzivaneho pro vyhodnoceni, zda $text(STDIN) odpovida IPPcode20
     public function __construct()
     {
-        $label = '(?:[_\-$&%*!?a-zA-Z]+)';
+        $label = '(?:[_\-$&%*!?a-zA-Z0-9]+)';
         $var = '((?:GF|LF|TF)@' . $label . ')';
         $symb = '(?:' . $var . '|(nil@nil|int@[+-]?\d+|bool@(?:true|false)|string@(?:\\\\\d{3}|[^\\\\\s#])*))';
 

@@ -87,8 +87,7 @@ if __name__ == "__main__":
                 sys.exit(52)
         #################### RETURN #########################
         elif opcode == 'return':
-            ref1 = ['label']
-            var.check(args[0], ref1)
+            var.check_none(args[0])
             var.check_none(args[1])
             var.check_none(args[2])
             i = label.popL()
@@ -96,7 +95,7 @@ if __name__ == "__main__":
                 sys.exit(56)
         ################### JUMPIFEQ ########################
         elif opcode == 'jumpifeq':
-            ref1 = ['var']
+            ref1 = ['label']
             ref2 = ['var', 'int', 'bool', 'string', 'nil']
             ref3 = ['var', 'int', 'bool', 'string', 'nil']
             var.check(args[0], ref1)
@@ -110,22 +109,21 @@ if __name__ == "__main__":
                 value2 = var.get_var(args[2][0])
             else:
                 value2 = args[2]
-            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+            if value1[1] != value2[1] and value1[1] != 'nil' and value2[1] != 'nil':
                 sys.exit(53)
+            tmp = label.get_label(xml.instructions[i][2][0][0])
             ## porovnavani
-            if value1[1] == 'nil' and value1[1] == 'nil':
-                i = label.get_label(xml.instructions[i][2][0][0])
+            if tmp == -1:
+                sys.exit(52)
+            if value1[1] == 'nil' and value2[1] == 'nil':
+                i = tmp
             elif value1[1] == 'nil' or value2[1] == 'nil':
                 pass
             elif value1[0] == value2[0]:
-                i = label.get_label(xml.instructions[i][2][0][0])
-            else:
-                pass
-            if(i == -1):
-                sys.exit(52)
+                i = tmp
         ################### JUMPIFNEQ ########################
         elif opcode == 'jumpifneq':
-            ref1 = ['var']
+            ref1 = ['label']
             ref2 = ['var', 'int', 'bool', 'string', 'nil']
             ref3 = ['var', 'int', 'bool', 'string', 'nil']
             var.check(args[0], ref1)
@@ -139,28 +137,34 @@ if __name__ == "__main__":
                 value2 = var.get_var(args[2][0])
             else:
                 value2 = args[2]
-            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+            if value1[1] != value2[1] and value1[1] != 'nil' and value2[1] != 'nil':
                 sys.exit(53)
+            tmp = label.get_label(xml.instructions[i][2][0][0])
+            if tmp == -1:
+                sys.exit(52)
             ## porovnavani
-            if value1[1] == 'nil' and value1[1] == 'nil':
+            if value1[1] == 'nil' and value2[1] == 'nil':
                 pass
             elif value1[1] == 'nil' or value2[1] == 'nil':
-                i = label.get_label(xml.instructions[i][2][0][0])
+                i = tmp
             elif value1[0] == value2[0]:
                 pass
             else:
-                i = label.get_label(xml.instructions[i][2][0][0])
-
-            if(i == -1):
-                sys.exit(52)
+                i = tmp
         ##################### EXIT ###########################
         elif opcode == 'exit':
-            ref1 = ['int']
+            ref1 = ['var', 'int']
             var.check(args[0], ref1)
             var.check_none(args[1])
             var.check_none(args[2])
-            if args[0][0] < 50 and args[0][0] >= 0:
-                sys.exit(args[0][0])
+            if args[0][1] == 'var':
+                value = var.get_var(args[0][0])
+                if value[1] != 'int':
+                    sys.exit(53)
+            else:
+                value = args[0]
+            if value[0] < 50 and value[0] >= 0:
+                sys.exit(value[0])
             else:
                 sys.exit(57)
         ################## CREATEFRAME #######################
@@ -211,7 +215,8 @@ if __name__ == "__main__":
             else:
                 value = args[0]
             if value[1] == 'nil':
-                print()
+                ######## !!!!!TODO: opravdu je to tak? ########################################
+                pass
             else:
                 print(value[0], end='')
         #################### READ ############################
@@ -226,14 +231,19 @@ if __name__ == "__main__":
             except EOFError:
                 value = ['nil', 'nil']
                 var.update_var(args[0][0], value)
-                pass
-            if args[1][0] == 'int' and a.isdigit():
-                value = [a, 'int']
+                i += 1
+                continue
+            if args[1][0] == 'int':
+                try:
+                    int(a)
+                    value = [a, 'int']
+                except ValueError:
+                    value = ['nil', 'nil']
             elif args[1][0] == 'string':
                 value = [a, 'string']
             elif args[1][0] == 'bool':
                 if a.lower() == 'true':
-                    value = [a.lower , 'bool']
+                    value = ['true' , 'bool']
                 else:
                     value = ['false', 'bool']
             else:
@@ -259,8 +269,8 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            value1[0] = value1[0] + value2[0]
-            var.update_var(args[0][0], value1)
+            value = [value1[0] + value2[0], 'int']
+            var.update_var(args[0][0], value)
         ################### SUB ##############################
         elif opcode == 'sub':
             ref1 = ['var']
@@ -281,8 +291,8 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            value1[0] = value1[0] - value2[0]
-            var.update_var(args[0][0], value1)
+            value = [value1[0] - value2[0], 'int']
+            var.update_var(args[0][0], value)
         ################### MUL ##############################
         elif opcode == 'mul':
             ref1 = ['var']
@@ -303,8 +313,10 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            value1[0] = value1[0] * value2[0]
-            var.update_var(args[0][0], value1)
+            value = [value1[0] * value2[0], 'int']
+            if value[0] > 1000:
+                sys.exit(99)
+            var.update_var(args[0][0], value)
         ################### IDIV ##############################
         elif opcode == 'idiv':
             ref1 = ['var']
@@ -327,8 +339,8 @@ if __name__ == "__main__":
                 value2 = args[2]
             if value2[0] == 0:
                 sys.exit(57)
-            value1[0] = value1[0] // value2[0]
-            var.update_var(args[0][0], value1)
+            value = [value1[0] // value2[0], 'int']
+            var.update_var(args[0][0], value)
         ################### LT ##############################
         elif opcode == 'lt':
             ref1 = ['var']
@@ -391,10 +403,10 @@ if __name__ == "__main__":
                 value2 = var.get_var(args[2][0])
             else:
                 value2 = args[2]
-            if value1[1] != value2[1] and value1[1] != 'nil' and value[1] != 'nil':
+            if value1[1] != value2[1] and value1[1] != 'nil' and value2[1] != 'nil':
                 sys.exit(53)
             ## porovnavani
-            if value1[1] == 'nil' and value1[1] == 'nil':
+            if value1[1] == 'nil' and value2[1] == 'nil':
                 val = ['true', 'bool']
             elif value1[1] == 'nil' or value2[1] == 'nil':
                 val = ['false', 'bool']
@@ -423,8 +435,11 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            value1[0] = value1[0] and value2[0]
-            var.update_var(args[0][0], value1)
+            if value1[0] == 'true' and value2[0] == 'true':
+                value = ['true', 'bool']
+            else:
+                value = ['false', 'bool']
+            var.update_var(args[0][0], value)
         ################### OR ##############################
         elif opcode == 'or':
             ref1 = ['var']
@@ -445,8 +460,11 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            value1[0] = value1[0] or value2[0]
-            var.update_var(args[0][0], value1)
+            if value1[0] == 'true' or value2[0] == 'true':
+                value = ['true', 'bool']
+            else:
+                value = ['false', 'bool']
+            var.update_var(args[0][0], value)
         ################### NOT ##############################
         elif opcode == 'not':
             ref1 = ['var']
@@ -504,15 +522,15 @@ if __name__ == "__main__":
                     sys.exit(53)
             else:
                 value2 = args[2]
-            if 0 <= value2[0] < len(value1[0]):
+            if not (0 <= value2[0] < len(value1[0])):
                 sys.exit(58)
             char = value1[0][value2[0]]
             try:
                 value1[0] = ord(char)
             except ValueError:
                 sys.exit(58)
-            value[1] = 'int'
-            var.update_var(args[0][0], value)
+            value1[1] = 'int'
+            var.update_var(args[0][0], value1)
         ################## TYPE ############################
         elif opcode == 'type':
             ref1 = ['var']
@@ -545,12 +563,102 @@ if __name__ == "__main__":
             var.check_none(args[2])
             value = var.pop_var()
             var.update_var(args[0][0], value)
-
- 
-
-        
-
+        ################# CONCAT ###########################
+        elif opcode == 'concat':
+            ref1 = ['var']
+            ref2 = ['var', 'string']
+            ref3 = ['var', 'string']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'string':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'string':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            value = [value1[0] + value2[0], 'string']
+            var.update_var(args[0][0], value)
+        ################## STRLEN ###########################
+        elif opcode == 'strlen':
+            ref1 = ['var']
+            ref2 = ['var', 'string']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check_none(args[2])
+            if args[1][1] == 'var':
+                value = var.get_var(args[1][0])
+                if value[1] != 'string':
+                    sys.exit(53)
+            else:
+                value = args[1]
+            val = [len(value[0]), 'int']
+            var.update_var(args[0][0], val)
+        ################## GETCHAR #########################
+        elif opcode == 'getchar':
+            ref1 = ['var']
+            ref2 = ['var', 'string']
+            ref3 = ['var', 'int']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'string':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'int':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            if not (0 <= value2[0] < len(value1[0])):
+                sys.exit(58)
+            char = value1[0][value2[0]]
+            value = [char, 'string']
+            var.update_var(args[0][0], value)
+        ################## SETCHAR #########################
+        elif opcode == 'setchar':
+            ref1 = ['var']
+            ref2 = ['var', 'int']
+            ref3 = ['var', 'string']
+            var.check(args[0], ref1)
+            var.check(args[1], ref2)
+            var.check(args[2], ref3)
+            variable = var.get_var(args[0][0])
+            if variable[1] != 'string':
+                sys.exit(53)
+            if args[1][1] == 'var':
+                value1 = var.get_var(args[1][0])
+                if value1[1] != 'int':
+                    sys.exit(53)
+            else:
+                value1 = args[1]
+            if args[2][1] == 'var':
+                value2 = var.get_var(args[2][0])
+                if value2[1] != 'string':
+                    sys.exit(53)
+            else:
+                value2 = args[2]
+            
+            if not (0 <= value1[0] < len(variable[0])):
+                sys.exit(58)
+            if len(value2[0]) == 0:
+                sys.exit(58)
+            char = value2[0][0]
+            variable[0] = variable[0][:value1[0]] + char + variable[0][value1[0]+1:]
+            var.update_var(args[0][0], variable)
+        ################## ostatni #################
+        else:
+            sys.exit(32)
         i += 1
     f.close()
 
-print(var.GF)
