@@ -47,7 +47,7 @@ class Tests
         }
     }
     private function test_parse($file){
-        exec('php ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
+        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('java -jar /pub/courses/ipp/jexamxml/jexamxml.jar ' . $file . 'out tmpf diffs.xml', $diff_out, $diff_ret);
         $rc = $rc[0];
@@ -76,7 +76,7 @@ class Tests
         $this->test_counter++;
     }
     private function test_int($file){
-        exec('python3 ' . $this->int_script . ' --input=' . $file . 'in --source=' . $file . 'src >tmpf', $output,$ret);
+        exec('python3.8 ' . $this->int_script . ' --input=' . $file . 'in --source=' . $file . 'src >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('diff ' . $file . 'out tmpf', $diff_out, $diff_ret);
         $rc = $rc[0];
@@ -109,7 +109,7 @@ class Tests
     }
     private function test_both($file){
         //echo "<p>$file</p>\n";
-        exec('php ' . $this->parse_script . ' <' . $file . 'src | python3 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
+        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src | python3.8 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('diff ' . $file . 'out tmpf', $diff_out, $diff_ret);
         $rc = $rc[0];

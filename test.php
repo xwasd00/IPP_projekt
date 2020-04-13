@@ -29,7 +29,7 @@ if ($opts = getopt('', $longopts)){
             echo "     --parse-only         - Testován bude pouze parsovací skript\n";
             echo "     --int-only           - Testován bude pouze interpretovací skript\n";
             echo "     --jexamxml=file      - soubor s JAR balíčkem JExamXML, imlicitní hodnota: /pub/courses/ipp/jexamxml/jexamxml.jar\n";
-            exit(10);
+            exit(0);
         }
     }
     if (array_key_exists('directory', $opts)){
@@ -80,8 +80,9 @@ echo "<title>Výsledek testovacího skriptu pro IPPcode20</title>\n";
 echo "</head>\n";
 
 echo "<body style='overflow: auto;'>\n";
-echo "<h1 style='margin: auto;margin-bottom: 20px;'>Výsledky test.php -- Mich:al Sova (xsovam00@stud.fit.vutbr.cz)</h1>\n";
-echo "<div style='overflow: auto;width: 90vw;margin: auto;height: 85vh;'>\n";
+echo "<h1 style='margin: auto;margin-bottom: 20px;'>Výsledky test.php </h1>\n";
+echo "<h2 style='margin: auto;margin-bottom: 20px;'>Michal Sova (xsovam00@stud.fit.vutbr.cz)</h2>\n";
+echo "<div style='overflow: auto;width: 90vw;margin: auto;height: 80vh;'>\n";
 $tests->runTests($dir_name);
 echo "</div>\n";
 echo "<div style='display: inline;top: 0;'>\n";
