@@ -1,4 +1,8 @@
 <?php
+/**********************************************************************/
+/*                Testovací skript pro projekt do IPP                 */
+/*                  autor: Michal Sova (xsovam00)                     */
+/**********************************************************************/
 require_once('src/Tests.php');
 
 function help(){
@@ -120,9 +124,9 @@ echo "</div>\n";
 
 // celkové výsledky
 echo "<div style='display: inline;top: 0;'>\n";
-echo "<h3 style='float: left;margin-right: 20px'>Total: " . $tests->test_counter . "</ps>\n";
-echo "<h3 style='float: left;margin-right: 20px'>Passed: <span style=\"color: green; \">" . $tests->passed . "</span></h3>\n";
-echo "<h3 style='float: left;margin-right: 20px'>Failed: <span style=\"color: red; \">" . $tests->failed . "</span></h3>\n";
+echo "<h3 style='float: left;margin-right: 20px'>Celkem: " . $tests->test_counter . "</ps>\n";
+echo "<h3 style='float: left;margin-right: 20px'>Úspěšné: <span style=\"color: green; \">" . $tests->passed . "</span></h3>\n";
+echo "<h3 style='float: left;margin-right: 20px'>Neúspěšné: <span style=\"color: red; \">" . $tests->failed . "</span></h3>\n";
 echo "</div>\n";
 echo "</body>\n";
 echo "</html>\n";

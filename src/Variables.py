@@ -136,7 +136,9 @@ class Variables:
             return ''
         return frame[var[1]][1]
 
-    # aktualizace proměnné
+    # aktualizace proměnné 'var' hodnotou 'value' 
+    # var = 'GF@a'
+    # value = [hodnota, typ]
     def update_var(self, var, value):
         var = self.split_var(var)
         ####### GLOBAL FRAME #######

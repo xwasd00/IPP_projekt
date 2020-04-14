@@ -1,4 +1,5 @@
 <?php
+# třída pro testování interpretu jazyka IPPcode20
 class Tests
 {
     public $parse_script = 'parse.php';
@@ -62,7 +63,7 @@ class Tests
     // při úspěchu => passed++
     // při neúspěchu => vygeneruje část html s neúspěšným testem (po přejetí více informací o testu)
     private function test_parse($file){
-        exec('php ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
+        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('java -jar /pub/courses/ipp/jexamxml/jexamxml.jar ' . $file . 'out tmpf diffs.xml', $diff_out, $diff_ret);
         $rc = $rc[0];
@@ -121,7 +122,7 @@ class Tests
     // při úspěchu => passed++
     // při neúspěchu => vygeneruje část html s neúspěšným testem (po přejetí více informací o testu)
     private function test_both($file){
-        exec('php ' . $this->parse_script . ' <' . $file . 'src | python3.8 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
+        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src | python3.8 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('diff ' . $file . 'out tmpf', $diff_out, $diff_ret);
         $rc = $rc[0];

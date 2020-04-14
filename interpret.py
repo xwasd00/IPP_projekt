@@ -1,3 +1,8 @@
+#############################################################################
+#                     2. část projektu do IPP                               #
+#                   autor: Michal Sova (xsovam00)                           #
+#############################################################################
+
 import getopt, sys
 from src.XmlParse import Parse
 from src.Labels import Label

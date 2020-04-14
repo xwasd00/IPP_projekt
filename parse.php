@@ -1,4 +1,8 @@
 <?php
+/***************************************************************************/
+/*                         1. část projektu do IPP                         */
+/*                      autor: Michal Sova (xsovam00)                      */
+/***************************************************************************/
 require_once('src/Regex_IPP_match.php');
 require_once ('src/Xml_IPP_writer.php');
 ini_set('display_errors', 'stderr');
