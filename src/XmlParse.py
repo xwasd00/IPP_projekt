@@ -1,43 +1,38 @@
-import sys
 import xml.etree.ElementTree as ET
-
+# třída pro parsování xml
 class Parse:
-    instructions = []
+    instructions = [] # seznam jednotlivých instrukcí
+    duplicate_order = [] # seznam pro zjištění duplicitního pořadí instrukcí
     def parse(self, xml_file):
         try:
             tree = ET.parse(xml_file)
             root = tree.getroot()
         except:
-            sys.stderr.write("Chybný XML formát.\n")
             return(31)
 
+        # kontrola hlavního těla programu
         if (root.tag != 'program'):
-            sys.stderr.write("Očekáván element 'program'.\n")
             return(32)
         if (root.get('language') != 'IPPcode20'):
-            sys.stderr.write("Očekáván správný atribut 'language' elementu 'program'.\n")
             return(32)
 
-        # jednotlive instrukce
+        # jednotlivé instrukce
         for inst in root:
             if (inst.tag != 'instruction'):
-                sys.stderr.write("Očekáván element 'instruction'.\n")
                 return(32)
-
             # order
             try:
                 order = int(inst.get('order'))
             except:
-                sys.stderr.write("Očekáván správný atribut 'order' elementu 'instruction'.\n")
                 return(32)
+            self.duplicate_order.append(order)
 
             #opcode
             opcode = inst.get('opcode')
             if (opcode is None):
-                sys.stderr.write("Očekáván atribut 'opcode' elementu 'instruction'.\n")
                 return(32)
 
-            # zpracovani argumentu
+            # zpracování argumentů
             arg1 = []
             arg2 = []
             arg3 = []
@@ -58,8 +53,8 @@ class Parse:
                         return(32)
                     arg3.append(arg.get('type'))
                 else:
-                    sys.stderr.write("Očekáván element 'arg1', 'arg2' nebo 'arg3'.\n")
-                    return(22)
+                    return(32)
+            # přidání jednotlivých instrukcí do seznamu instrukcí
             i = []
             i.append(order)
             i.append(opcode)
@@ -71,12 +66,14 @@ class Parse:
             self.instructions.append(i)
 
         
-        #serazeni seznamu instrukci
+        #seřazení seznamu instrukcí + zjištění duplicitního pořadí
         def sortOrder(val):
             return val[0]
         self.instructions.sort(key = sortOrder)
         if len(self.instructions) > 0:
-            if self.instructions[0][0] < 0:
+            if self.instructions[0][0] < 1:
+                return(32)
+            if len(self.duplicate_order) != len(set(self.duplicate_order)):
                 return(32)
         del root
         del tree

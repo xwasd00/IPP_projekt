@@ -13,19 +13,28 @@ class Tests
 
     public function runTests($dir_name){
         $dir = opendir($dir_name);
+        // postupné načtení všech souborů ve složce
         while(($file = readdir($dir)) !== false){
+
+            //rekurzivní volání funkce nad podadresáři, je-li zadán parametr --recursive
             if(is_dir($dir_name . '/' . $file) && $file !== '.' && $file !== '..'){
                 if ($this->recursive) {
                     $this->runTests($dir_name . '/' . $file);
                 }
             }
             else if($file === '.' || $file === '..'){
-
+                //tento adrresář, nebo nadřazený adresář => skip
             }
+            //soubor
             else {
+                //nalezení *.src souborů
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 if($ext === 'src') {
+
+                    // oddělení názvu souboru od přípony
                     $filename = basename($file, $ext);
+
+                    //doplnění případně chybějících souborů *.rc *.out a *.in
                     if(!file_exists($dir_name . '/' . $filename . 'out')){
                         exec('touch '. $dir_name . '/' . $filename . 'out');
                     }
@@ -35,6 +44,8 @@ class Tests
                     if(!file_exists($dir_name . '/' . $filename . 'rc')){
                         exec('echo "0" >'. $dir_name . '/' . $filename . 'rc');
                     }
+
+                    //testování podle zadaného parametru
                     if ($this->parse_only) {
                         $this->test_parse($dir_name . '/' . $filename);
                     } else if ($this->int_only) {
@@ -46,21 +57,22 @@ class Tests
             }
         }
     }
+
+    //testování pouze parsovacího skriptu
+    // při úspěchu => passed++
+    // při neúspěchu => vygeneruje část html s neúspěšným testem (po přejetí více informací o testu)
     private function test_parse($file){
-        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
+        exec('php ' . $this->parse_script . ' <' . $file . 'src >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('java -jar /pub/courses/ipp/jexamxml/jexamxml.jar ' . $file . 'out tmpf diffs.xml', $diff_out, $diff_ret);
         $rc = $rc[0];
-        if ($rc == $ret && $ret !=0) {
+        if ($rc == $ret && $ret !=0) {/*
             echo "<p style='color:green'>";
             echo $file . "src: OK";
-            echo "</p>\n";
+            echo "</p>\n";*/
             $this->passed++;
         }
         else if ($rc == $ret && $diff_ret == 0){
-            echo "<p style='color:green'>";
-            echo $file . "src: OK";
-            echo "</p>\n";
             $this->passed++;
         }
         else{
@@ -75,21 +87,18 @@ class Tests
         exec('rm tmpf diffs.xml');
         $this->test_counter++;
     }
+    //testování pouze interpretovacího skriptu
+    // při úspěchu => passed++
+    // při neúspěchu => vygeneruje část html s neúspěšným testem (po přejetí více informací o testu)
     private function test_int($file){
         exec('python3.8 ' . $this->int_script . ' --input=' . $file . 'in --source=' . $file . 'src >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('diff ' . $file . 'out tmpf', $diff_out, $diff_ret);
         $rc = $rc[0];
         if ($rc == $ret && $ret != 0) {
-            echo "<p style='color:green'>";
-            echo $file . "src: OK";
-            echo "</p>\n";
             $this->passed++;
         }
         else if($rc == $ret && $diff_ret == 0){
-            echo "<p style='color:green'>";
-            echo $file . "src: OK";
-            echo "</p>\n";
             $this->passed++;
         }
         else{
@@ -107,22 +116,19 @@ class Tests
         exec('rm tmpf');
         $this->test_counter++;
     }
+
+    //testování obou skriptů
+    // při úspěchu => passed++
+    // při neúspěchu => vygeneruje část html s neúspěšným testem (po přejetí více informací o testu)
     private function test_both($file){
-        //echo "<p>$file</p>\n";
-        exec('php7.4 ' . $this->parse_script . ' <' . $file . 'src | python3.8 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
+        exec('php ' . $this->parse_script . ' <' . $file . 'src | python3.8 ' . $this->int_script . ' --input=' . $file . 'in >tmpf', $output,$ret);
         exec('cat ' . $file . 'rc', $rc);
         exec('diff ' . $file . 'out tmpf', $diff_out, $diff_ret);
         $rc = $rc[0];
         if ($rc == $ret && $ret != 0) {
-            echo "<p style='color:green'>";
-            echo $file . "src: OK";
-            echo "</p>\n";
             $this->passed++;
         }
         else if($rc == $ret && $diff_ret == 0){
-            echo "<p style='color:green'>";
-            echo $file . "src: OK";
-            echo "</p>\n";
             $this->passed++;
         }
         else{
